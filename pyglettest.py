@@ -23,7 +23,7 @@ class Window(pyglet.window.Window):
 
         pyglet.clock.schedule(self.update)
 
-        self.model = Cube()
+        self.model = Cube(1, (1, 1, 1))
         self.camera = Camera()
         self.ground = Ground()
         self.light = Light()

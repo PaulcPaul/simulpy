@@ -39,6 +39,9 @@ class Model3D:
 
     def draw(self):
         self.batch.draw()
+        glPushMatrix()
+        glTranslated(*self.pos)
+        glPopMatrix()
 
 class Light(Model3D):
     def __init__(self):
@@ -61,12 +64,14 @@ class Light(Model3D):
         glEnable(GL_LIGHT0)
 
         x, y, z = self.pos
-        X, Y, Z = x + 1, y + 1, z + 1
+        X, Y, Z = x + .1, y + .1, z + .1
 
-        self.batch.add(4, GL_QUADS, None, ('v3f',(X,y,z,x,y,z,x,Y,z,X,Y,z)), color)
-        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,Z,X,y,Z,X,Y,Z,x,Y,Z)), color)
-        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,z,x,y,Z,x,Y,Z,x,Y,z)), color)
-        self.batch.add(4, GL_QUADS, None, ('v3f',(X,y,z,X,y,z,X,Y,z,X,Y,z)), color)
+        self.batch.add(4, GL_QUADS, None, ('v3f',(X,y,z,x,y,z,x,Y,z,X,Y,z)), color) # frente
+        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,Z,X,y,Z,X,Y,Z,x,Y,Z)), color) # tras
+        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,z,x,y,Z,x,Y,Z,x,Y,z)), color) # esquerda
+        self.batch.add(4, GL_QUADS, None, ('v3f',(X,y,z,X,y,Z,X,Y,Z,X,Y,z)), color) # direita
+        self.batch.add(4, GL_QUADS, None, ('v3f',(x,Y,z,x,Y,Z,X,Y,Z,X,Y,z)), color) # cima
+        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,z,x,y,Z,X,y,Z,X,y,z)), color) # baixo
 
     def show(self):
         glLightfv(GL_LIGHT0, GL_DIFFUSE,  (GLfloat * 4)(*self.luzDifusa))
@@ -75,20 +80,24 @@ class Light(Model3D):
         self.draw()
 
 class Cube(Model3D):
-    def __init__(self):
+    def __init__(self, size, position):
         super().__init__()
 
         self.enable_collision()
 
+        self.pos = position
+
         color = ('c3f', (1,1,1)*4)
 
         x, y, z = self.pos
-        X, Y, Z = x + 1, y + 1, z + 1
+        X, Y, Z = x + size, y + size, z + size
 
-        self.batch.add(4, GL_QUADS, None, ('v3f',(X,y,z,x,y,z,x,Y,z,X,Y,z)), color)
-        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,Z,X,y,Z,X,Y,Z,x,Y,Z)), color)
-        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,z,x,y,Z,x,Y,Z,x,Y,z)), color)
-        self.batch.add(4, GL_QUADS, None, ('v3f',(X,y,z,X,y,z,X,Y,z,X,Y,z)), color)
+        self.batch.add(4, GL_QUADS, None, ('v3f',(X,y,z,x,y,z,x,Y,z,X,Y,z)), color) # frente
+        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,Z,X,y,Z,X,Y,Z,x,Y,Z)), color) # tras
+        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,z,x,y,Z,x,Y,Z,x,Y,z)), color) # esquerda
+        self.batch.add(4, GL_QUADS, None, ('v3f',(X,y,z,X,y,Z,X,Y,Z,X,Y,z)), color) # direita
+        self.batch.add(4, GL_QUADS, None, ('v3f',(x,Y,z,x,Y,Z,X,Y,Z,X,Y,z)), color) # cima
+        self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,z,x,y,Z,X,y,Z,X,y,z)), color) # baixo
 
 class Ground(Model3D):
     def __init__(self):
@@ -96,9 +105,12 @@ class Ground(Model3D):
 
         self.enable_collision()
 
-        color = ('c3f', (0, 1, 1)*4)
+        color = ('c3f', (0, 0, 0)*4)
 
-        self.batch.add(4, GL_QUADS, None, ('v3f', (100, 0, 0, -100, 0, 0, 0, 0, 100, -100, 0, -100)))
+        x, y, z = self.pos
+        X, Y, Z = x + 100, y + 100, z + 100
+
+        self.batch.add(4, GL_QUADS, None, ('v3f', (-X, y, Z, -X, y, -Z, X, y, -Z, X, y, Z)), color)
 
 class Camera():
     def __init__(self):
