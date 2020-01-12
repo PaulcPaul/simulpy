@@ -26,21 +26,46 @@ def draw_axis(axis_length, axis_origin):
 
 class Model3D:
     def __init__(self):
-        self.batch = pyglet.graphics.Batch()
+        self.batch     = pyglet.graphics.Batch()
         self.collision = False
-        self.pos = [0, 0, 0]
-        self.rot = [0, 0, 0]
+        self.gravity   = False
+        self.pos       = [0.0, 0.0, 0.0]
+        self.rot       = [0.0, 0.0, 0.0]
+        self.velocity  = [0.0, 0.0, 0.0]
+        self.accel     = [0.0, -5, 0.0]
+        self.s         = [0.0, 0.0, 0.0]
 
     def enable_collision(self):
-        set_collision = True
+        self.collision = True
 
     def disable_collision(self):
-        set_collision = False
+        self.collision = False
+    
+    def enable_gravity(self):
+        self.gravity = True
+
+    def disable_gravity(self):
+        self.gravity = False
+    
+    def update(self, dt, keys):
+        if self.gravity:
+            self.velocity[0] += self.accel[0] * dt
+            self.velocity[1] += self.accel[1] * dt
+            self.velocity[2] += self.accel[2] * dt
+
+            self.s[0] += self.velocity[0] * dt
+            self.s[1] += self.velocity[1] * dt
+            self.s[2] += self.velocity[2] * dt
+
+            self.pos[0] += self.velocity[0] * dt
+            self.pos[1] += self.velocity[1] * dt
+            self.pos[2] += self.velocity[2] * dt
 
     def draw(self):
-        self.batch.draw()
         glPushMatrix()
-        glTranslated(*self.pos)
+        x, y, z = self.s
+        glTranslated(x, y, z)
+        self.batch.draw()
         glPopMatrix()
 
 class Light(Model3D):
@@ -78,16 +103,15 @@ class Light(Model3D):
         glLightfv(GL_LIGHT0, GL_SPECULAR, (GLfloat * 4)(*self.luzEspecular))
         glLightfv(GL_LIGHT0, GL_POSITION, (GLfloat * 3)(*self.pos))
         self.draw()
-
 class Cube(Model3D):
-    def __init__(self, size, position):
+    def __init__(self, size, position, color):
         super().__init__()
 
         self.enable_collision()
+        self.enable_gravity()
 
+        self.size = size
         self.pos = position
-
-        color = ('c3f', (1,1,1)*4)
 
         x, y, z = self.pos
         X, Y, Z = x + size, y + size, z + size
@@ -105,7 +129,7 @@ class Ground(Model3D):
 
         self.enable_collision()
 
-        color = ('c3f', (0, 0, 0)*4)
+        color = ('c3f', (0, 0.4, 0)*4)
 
         x, y, z = self.pos
         X, Y, Z = x + 100, y + 100, z + 100
@@ -114,7 +138,7 @@ class Ground(Model3D):
 
 class Camera():
     def __init__(self):
-        self.pos = [0, 0, 0]
+        self.pos = [0, 5, 30]
         self.rot = [0, 0]
 
     def mouse_motion(self, dx, dy):
@@ -132,8 +156,7 @@ class Camera():
     def move(self):
         glRotatef(-self.rot[0], 1, 0, 0)
         glRotatef(-self.rot[1], 0, 1, 0)
-        x, y, z = self.pos
-        glTranslatef(-x, -y, -z)
+        glTranslatef(-self.pos[0], -self.pos[1], -self.pos[2])
 
     def update(self, dt, keys):
         s = dt * 10

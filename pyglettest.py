@@ -3,6 +3,7 @@ from pyglet.window import key
 import pyglet
 
 from models import Light, Cube, Camera, Ground, draw_axis
+from utils import collision, ground_collision
 class Window(pyglet.window.Window):
 
     def setLock(self, state):
@@ -23,11 +24,19 @@ class Window(pyglet.window.Window):
 
         pyglet.clock.schedule(self.update)
 
-        self.model = Cube(1, (1, 1, 1))
+        self.models = []
+
+        self.add_models(Cube(1, [1, 5, 1], ('c3f', (1,1,1)*4)))
+        self.add_models(Cube(2, [3, 10, 1], ('c3f', (0,1,1)*4)))
+        self.add_models(Cube(2, [3, 15, 1], ('c3f', (1,1,0)*4)))
+
         self.camera = Camera()
         self.ground = Ground()
         self.light = Light()
-    
+
+    def add_models(self, model):
+        self.models.append(model)
+
     def gl_init(self):
         glClearColor(0.5, 0.5, 0.5, 1)
         glShadeModel(GL_SMOOTH)
@@ -59,15 +68,26 @@ class Window(pyglet.window.Window):
     def update(self, dt):
         self.camera.update(dt, self.keys)
 
+        for model in self.models:
+            model.update(dt, self.keys)
+
     def on_draw(self):
         self.clear()
         draw_axis(3, (-1, 1, -1))
         self.set3d()
-        
         self.camera.move()
         self.light.show()
-        self.model.draw()
         self.ground.draw()
+
+        for i in range(len(self.models)):
+            for j in range(len(self.models)):
+                if i != j:
+                    collision(self.models[i], self.models[j])
+            
+            ground_collision(self.models[i], self.ground)
+
+        for model in self.models:
+            model.draw()
 
 if __name__ == "__main__":
     w, h = 800, 600
