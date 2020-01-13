@@ -32,8 +32,7 @@ class Model3D:
         self.pos       = [0.0, 0.0, 0.0]
         self.rot       = [0.0, 0.0, 0.0]
         self.velocity  = [0.0, 0.0, 0.0]
-        self.accel     = [0.0, -5, 0.0]
-        self.s         = [0.0, 0.0, 0.0]
+        self.accel     = [0.0, -9.8, 0.0]
 
     def enable_collision(self):
         self.collision = True
@@ -53,18 +52,14 @@ class Model3D:
             self.velocity[1] += self.accel[1] * dt
             self.velocity[2] += self.accel[2] * dt
 
-            self.s[0] += self.velocity[0] * dt
-            self.s[1] += self.velocity[1] * dt
-            self.s[2] += self.velocity[2] * dt
-
             self.pos[0] += self.velocity[0] * dt
             self.pos[1] += self.velocity[1] * dt
             self.pos[2] += self.velocity[2] * dt
 
     def draw(self):
         glPushMatrix()
-        x, y, z = self.s
-        glTranslated(x, y, z)
+        x, y, z = self.pos
+        glTranslatef(x, y, z)
         self.batch.draw()
         glPopMatrix()
 
@@ -111,7 +106,6 @@ class Cube(Model3D):
         self.enable_gravity()
 
         self.size = size
-        self.pos = position
 
         x, y, z = self.pos
         X, Y, Z = x + size, y + size, z + size
@@ -122,6 +116,8 @@ class Cube(Model3D):
         self.batch.add(4, GL_QUADS, None, ('v3f',(X,y,z,X,y,Z,X,Y,Z,X,Y,z)), color) # direita
         self.batch.add(4, GL_QUADS, None, ('v3f',(x,Y,z,x,Y,Z,X,Y,Z,X,Y,z)), color) # cima
         self.batch.add(4, GL_QUADS, None, ('v3f',(x,y,z,x,y,Z,X,y,Z,X,y,z)), color) # baixo
+
+        self.pos = position
 
 class Ground(Model3D):
     def __init__(self):
