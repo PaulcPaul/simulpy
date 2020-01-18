@@ -26,9 +26,21 @@ class Window(pyglet.window.Window):
 
         self.models = []
 
-        self.add_models(Cube(1, [0,10,0], ('c3f', (1,1,1)*4)))
-        self.add_models(Cube(2, [2,20,0], ('c3f', (0,1,1)*4)))
-        self.add_models(Cube(2, [2,40,0], ('c3f', (1,1,0)*4)))
+        # self.add_models(Cube(1, [0,10,0], ('c3f', (1,1,1)*4)))
+        # self.add_models(Cube(2, [2,20,0], ('c3f', (0,1,1)*4)))
+        # self.add_models(Cube(2, [1,40,1], ('c3f', (1,1,0)*4)))
+
+        self.add_models(Cube(2, [0, 0, 0], ('c3f', (1,1,0)*4)))
+        self.add_models(Cube(2, [0, 0, 10], ('c3f', (1,1,1)*4)))
+
+        self.models[0].haccel = [0.0, 0.0, 1.0]
+        self.models[1].haccel = [0.0, 0.0, -1.0]
+
+        self.add_models(Cube(2, [10, 0, 0], ('c3f', (1,1,0)*4)))
+        self.add_models(Cube(2, [20, 0, 0], ('c3f', (1,1,1)*4)))
+
+        self.models[2].haccel = [1.0, 0.0, 0.0]
+        self.models[3].haccel = [-1.0, 0.0, 0.0]
 
         self.camera = Camera()
         self.ground = Ground()

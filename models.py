@@ -33,6 +33,8 @@ class Model3D:
         self.rot       = [0.0, 0.0, 0.0]
         self.velocity  = [0.0, 0.0, 0.0]
         self.accel     = [0.0, -9.8, 0.0]
+        self.hvel      = [0.0, 0.0, 0.0]
+        self.haccel    = [0.0, 0.0, 0.0]
 
     def enable_collision(self):
         self.collision = True
@@ -55,6 +57,14 @@ class Model3D:
             self.pos[0] += self.velocity[0] * dt
             self.pos[1] += self.velocity[1] * dt
             self.pos[2] += self.velocity[2] * dt
+
+        self.hvel[0] += self.haccel[0] * dt
+        self.hvel[1] += self.haccel[1] * dt
+        self.hvel[2] += self.haccel[2] * dt
+
+        self.pos[0] += self.hvel[0] * dt
+        self.pos[1] += self.hvel[1] * dt
+        self.pos[2] += self.hvel[2] * dt
 
     def draw(self):
         glPushMatrix()
