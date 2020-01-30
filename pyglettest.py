@@ -33,14 +33,17 @@ class Window(pyglet.window.Window):
         self.add_models(Cube(2, [0, 0, 0], ('c3f', (1,1,0)*4)))
         self.add_models(Cube(2, [0, 0, 10], ('c3f', (1,1,1)*4)))
 
-        self.models[0].haccel = [0.0, 0.0, 1.0]
-        self.models[1].haccel = [0.0, 0.0, -1.0]
+        self.models[0].haccel = [0.0, 0.0, 5.0]
+        self.models[1].haccel = [0.0, 0.0, -5.0]
 
         self.add_models(Cube(2, [10, 0, 0], ('c3f', (1,1,0)*4)))
         self.add_models(Cube(2, [20, 0, 0], ('c3f', (1,1,1)*4)))
 
-        self.models[2].haccel = [1.0, 0.0, 0.0]
-        self.models[3].haccel = [-1.0, 0.0, 0.0]
+        self.models[2].haccel = [5.0, 0.0, 0.0]
+        self.models[3].haccel = [-5.0, 0.0, 0.0]
+
+        self.add_models(Cube(2, [5, 30, 0], ('c3f', (1,1,0)*4)))
+        self.add_models(Cube(2, [5, 0, 0], ('c3f', (1,1,1)*4)))
 
         self.camera = Camera()
         self.ground = Ground()
@@ -76,6 +79,15 @@ class Window(pyglet.window.Window):
             self.close()
         elif KEY == key.Q:
             self.mouse_lock = not self.mouse_lock
+
+        if KEY == key.K:
+            x, y, z = self.camera.pos
+            self.add_models(Cube(2, [x, y, z], ('c3f', (1,1,0)*4)))
+        
+        if KEY == key.T:
+            x, y, z = self.camera.pos
+            self.add_models(Cube(2, [x, y, z], ('c3f', (1,1,0)*4)))
+            self.models[-1].hvel = [x, y, -z]
     
     def update(self, dt):
         self.camera.update(dt, self.keys)

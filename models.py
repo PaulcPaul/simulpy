@@ -31,10 +31,15 @@ class Model3D:
         self.gravity   = False
         self.pos       = [0.0, 0.0, 0.0]
         self.rot       = [0.0, 0.0, 0.0]
-        self.velocity  = [0.0, 0.0, 0.0]
-        self.accel     = [0.0, -9.8, 0.0]
+        self.rotvel    = [0.0, 0.0, 0.0]
+        self.yvel      = [0.0, 0.0, 0.0]
+        self.yaccel    = [0.0, -9.8, 0.0]
         self.hvel      = [0.0, 0.0, 0.0]
         self.haccel    = [0.0, 0.0, 0.0]
+        self.force     = [0.0, 0.0, 0.0]
+        self.lmomentum = [0.0, 0.0, 0.0]
+        self.wmomentum = [0.0, 0.0, 0.0]
+        self.friction  = 1.01
 
     def enable_collision(self):
         self.collision = True
@@ -50,25 +55,36 @@ class Model3D:
     
     def update(self, dt, keys):
         if self.gravity:
-            self.velocity[0] += self.accel[0] * dt
-            self.velocity[1] += self.accel[1] * dt
-            self.velocity[2] += self.accel[2] * dt
+            self.yvel[0] += self.yaccel[0] * dt
+            self.yvel[1] += self.yaccel[1] * dt
+            self.yvel[2] += self.yaccel[2] * dt
 
-            self.pos[0] += self.velocity[0] * dt
-            self.pos[1] += self.velocity[1] * dt
-            self.pos[2] += self.velocity[2] * dt
+            self.pos[0] += self.yvel[0] * dt
+            self.pos[1] += self.yvel[1] * dt
+            self.pos[2] += self.yvel[2] * dt
 
         self.hvel[0] += self.haccel[0] * dt
         self.hvel[1] += self.haccel[1] * dt
         self.hvel[2] += self.haccel[2] * dt
 
+        self.hvel[0] /= self.friction
+        self.hvel[1] /= self.friction
+        self.hvel[2] /= self.friction
+
         self.pos[0] += self.hvel[0] * dt
         self.pos[1] += self.hvel[1] * dt
         self.pos[2] += self.hvel[2] * dt
 
+        self.rot[0] += self.rotvel[0] * dt
+        self.rot[1] += self.rotvel[1] * dt
+        self.rot[2] += self.rotvel[2] * dt
+
     def draw(self):
         glPushMatrix()
         x, y, z = self.pos
+        glRotatef(self.rot[0], 1, 0, 0)
+        glRotatef(self.rot[1], 0, 1, 0)
+        glRotatef(self.rot[2], 0, 0, 1)
         glTranslatef(x, y, z)
         self.batch.draw()
         glPopMatrix()
