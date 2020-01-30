@@ -85,7 +85,9 @@ class Window(pyglet.window.Window):
             self.add_models(Cube(2, [x, y, z], ('c3f', (1,1,0)*4)))
         
         if KEY == key.T:
-            x, y, z = self.camera.pos
+            x = self.camera.pos[0]
+            y = self.camera.pos[1]
+            z = self.camera.pos[2] + 10
             self.add_models(Cube(2, [x, y, z], ('c3f', (1,1,0)*4)))
             self.models[-1].hvel = [x, y, -z]
     

@@ -37,12 +37,12 @@ def collision(P1, P2):
                     P1.yvel = [0.0, 0.0, 0.0]
                     P1.pos[1] = Y2
         elif (Z1 >= z2 and Z1 <= Z2) or (z1 <= Z2 and z1 >= z2):
+            
             if (x1 <= x2 and X1 >= x2) or (x1 >= x2 and x1 <= X2):
-                if (y1 < Y2 and y2 < Y1):
                     P2.hvel = [-x for x in P2.hvel]
 
-                    if P1.hvel[0] == 0 and P1.hvel[0] == 0 and P1.hvel[0] == 0:
-                        P1.hvel = [-x for x in P2.hvel]
+                    if P1.hvel == [0.0, 0.0, 0.0]:
+                        P1.hvel = P2.hvel
 
                     P1.haccel = [0.0, 0.0, 0.0]
                     P2.haccel = [0.0, 0.0, 0.0]

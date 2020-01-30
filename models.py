@@ -75,16 +75,17 @@ class Model3D:
         self.pos[1] += self.hvel[1] * dt
         self.pos[2] += self.hvel[2] * dt
 
+        self.rotvel[0] /= self.friction
+        self.rotvel[1] /= self.friction
+
         self.rot[0] += self.rotvel[0] * dt
         self.rot[1] += self.rotvel[1] * dt
-        self.rot[2] += self.rotvel[2] * dt
 
     def draw(self):
         glPushMatrix()
         x, y, z = self.pos
         glRotatef(self.rot[0], 1, 0, 0)
         glRotatef(self.rot[1], 0, 1, 0)
-        glRotatef(self.rot[2], 0, 0, 1)
         glTranslatef(x, y, z)
         self.batch.draw()
         glPopMatrix()
